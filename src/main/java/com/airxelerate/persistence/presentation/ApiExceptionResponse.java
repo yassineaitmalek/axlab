@@ -3,8 +3,12 @@ package com.airxelerate.persistence.presentation;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,4 +36,18 @@ public class ApiExceptionResponse {
 
   @Builder.Default
   private String zone = ZoneId.systemDefault().toString();
+
+  @Builder.Default
+  private List<ValidationFieldError> validationFieldErrors = new ArrayList<>();
+
+  @Data
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor
+  public static class ValidationFieldError {
+
+    private String field;
+
+    private String message;
+  }
 }

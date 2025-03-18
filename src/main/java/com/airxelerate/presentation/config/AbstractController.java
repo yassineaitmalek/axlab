@@ -1,5 +1,6 @@
 package com.airxelerate.presentation.config;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import com.airxelerate.persistence.presentation.ApiDataResponse;
 import com.airxelerate.persistence.presentation.ApiDownloadInput;
 import com.airxelerate.persistence.presentation.ApiDownloadInputLarge;
 import com.airxelerate.persistence.presentation.ApiExceptionResponse;
+import com.airxelerate.persistence.presentation.ApiExceptionResponse.ValidationFieldError;
 import com.airxelerate.persistence.presentation.ApiPartialInput;
 
 public interface AbstractController {
@@ -156,6 +158,20 @@ public interface AbstractController {
                                                                 .message(exception.getMessage())
                                                                 .httpStatus(HttpStatus.TOO_MANY_REQUESTS.value())
                                                                 .status(HttpStatus.TOO_MANY_REQUESTS.toString())
+                                                                .path(request.getDescription(false))
+                                                                .build());
+        }
+
+        public default ResponseEntity<ApiExceptionResponse> validationErrors(
+                        List<ValidationFieldError> validationFieldErrors,
+                        Exception exception, WebRequest request) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(
+                                                ApiExceptionResponse.builder()
+                                                                .message(exception.getMessage())
+                                                                .validationFieldErrors(validationFieldErrors)
+                                                                .httpStatus(HttpStatus.BAD_REQUEST.value())
+                                                                .status(HttpStatus.BAD_REQUEST.toString())
                                                                 .path(request.getDescription(false))
                                                                 .build());
         }
